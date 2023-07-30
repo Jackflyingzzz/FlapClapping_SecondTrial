@@ -348,7 +348,7 @@ class IBMEnv(gym.Env):
         print(angle_change)
         next_state = self.get_next_state(self.prev_angles, angle_change)
         terminal = False #self.cur_iter >= self.max_iter !! We should not be setting terminal to true when reaching max timestep
-        reward = force_rw + penalty
+        reward = force_rw
         self.prev_angles = actions
         return next_state, reward, terminal, {}
 
