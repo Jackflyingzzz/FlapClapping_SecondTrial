@@ -304,7 +304,8 @@ class IBMEnv(gym.Env):
             3. Compute reward
             4. Read probe output
         """
-        actions = copy.deepcopy(actions_ref)* (180/np.pi)
+        actions = copy.deepcopy(actions_ref)
+        actions = actions*(180/np.pi)
 
         alpha_transitions = open(os.path.join(self.cwd, 'alpha_transitions.prm'), 'w')
 
@@ -409,8 +410,8 @@ class IBMEnv(gym.Env):
 
         return next_state
 
-    def linear_transform(self, x, bounds):
-         return 2*(x - bounds[1])/(bounds[1] - bounds[0]) + 1
+    #def linear_transform(self, x, bounds):
+         #return 2*(x - bounds[1])/(bounds[1] - bounds[0]) + 1
 
     def get_reward(self, actions):
         # TODO: Allow user to select from a range of different reward functions
@@ -446,26 +447,26 @@ class IBMEnv(gym.Env):
 
         return reward / 4
 
-    def _clip_angles(self, actions_deg): # Ensure both flaps are in a valid range, accepts angles in DEGREES
-        new_angles = self.prev_angles + actions_deg
+    #def _clip_angles(self, actions_deg): # Ensure both flaps are in a valid range, accepts angles in DEGREES
+        #new_angles = self.prev_angles + actions_deg
 
-        penalty = 0
-        clipped_actions = actions_deg
+        #penalty = 0
+        #clipped_actions = actions_deg
 
-        if ((new_angles[0] < self.top_flap_limits[0] or new_angles[0] > self.top_flap_limits[1]) or 
-            (new_angles[1] < self.bottom_flap_limits[0] or new_angles[1] > self.bottom_flap_limits[1])):
+        #if ((new_angles[0] < self.top_flap_limits[0] or new_angles[0] > self.top_flap_limits[1]) or 
+            #(new_angles[1] < self.bottom_flap_limits[0] or new_angles[1] > self.bottom_flap_limits[1])):
             
-            clipped_new_angles = np.zeros(2)
+            #clipped_new_angles = np.zeros(2)
             # Clip angles between the desired range
-            clipped_new_angles[0] = max(min(new_angles[0], self.top_flap_limits[1]), self.top_flap_limits[0])
-            clipped_new_angles[1] = max(min(new_angles[1], self.bottom_flap_limits[1]), self.bottom_flap_limits[0])
+            #clipped_new_angles[0] = max(min(new_angles[0], self.top_flap_limits[1]), self.top_flap_limits[0])
+            #clipped_new_angles[1] = max(min(new_angles[1], self.bottom_flap_limits[1]), self.bottom_flap_limits[0])
 
-            clipped_actions = (clipped_new_angles - self.prev_angles)
+            #clipped_actions = (clipped_new_angles - self.prev_angles)
 
             # Discourage this action
-            penalty = self.out_of_bounds_penalty
+            #penalty = self.out_of_bounds_penalty
 
-        return (clipped_actions, penalty)
+        #return (clipped_actions, penalty)
     
     def compute_angles_at_step(self, actions, step):
         bounded_step = step
