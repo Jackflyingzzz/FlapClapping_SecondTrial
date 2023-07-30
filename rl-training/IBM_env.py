@@ -208,7 +208,7 @@ class IBMEnv(gym.Env):
         if self.plt is not None:
             self.reset_plot()
 
-        state = self.get_next_state(np.zeros(4))
+        state = self.get_next_state(np.zeros(2), np.zeros(2))
         return state
 
     def reset_plot(self):
