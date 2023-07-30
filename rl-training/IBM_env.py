@@ -208,7 +208,7 @@ class IBMEnv(gym.Env):
         if self.plt is not None:
             self.reset_plot()
 
-        state = self.get_next_state(np.zeros(2))
+        state = self.get_next_state(np.zeros(4))
         return state
 
     def reset_plot(self):
@@ -342,7 +342,9 @@ class IBMEnv(gym.Env):
 
         self.history_buffer['top_angle'].extend(self.prev_angles[0])
         self.history_buffer['bottom_angle'].extend(self.prev_angles[1])
+        print('the angle change is')
         angle_change = actions - self.prev_angles
+        print(angle_change)
         next_state = self.get_next_state(self.prev_angles, angle_change)
         terminal = False #self.cur_iter >= self.max_iter !! We should not be setting terminal to true when reaching max timestep
         reward = force_rw + penalty
