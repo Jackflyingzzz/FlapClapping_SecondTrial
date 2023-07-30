@@ -157,7 +157,7 @@ class IBMEnv(gym.Env):
             state_shape = state_shape + 2 # Shape is number of probes + top and bottom angle change
 
         self.observation_space = gym.spaces.Box(shape=(state_shape,), low=-np.inf, high=np.inf) # Shape is number of probes
-        self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.env_params['delta_limits'][0])*np.pi/180, high=float(self.env_params['delta_limits'][1])*np.pi/180)
+        self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(-50*np.pi/180), high=float(70*np.pi/180))
         #self.spec.max_episode_steps = int(np.ceil(self.max_iter / self.solver_params.step_iter))
 
     # Optional
@@ -304,7 +304,7 @@ class IBMEnv(gym.Env):
             3. Compute reward
             4. Read probe output
         """
-        actions = copy.deepcopy(actions_ref)
+        actions = copy.deepcopy(actions_ref)* (180/np.pi)
 
         alpha_transitions = open(os.path.join(self.cwd, 'alpha_transitions.prm'), 'w')
 
@@ -313,12 +313,12 @@ class IBMEnv(gym.Env):
         elif self.flap_behaviour == 'clapping':
             actions = np.append(actions, -actions[0]) # When clapping, flap angles are opposite
 
-        clipped_actions, penalty = self._clip_angles(actions*180/np.pi) # Clip the angles into a valid range
+        #clipped_actions, penalty = self._clip_angles(actions*180/np.pi) # Clip the angles into a valid range
 
-        alpha_transitions.write(f'{self.prev_angles[0]}\n{self.prev_angles[0] + clipped_actions[0]}\n{self.prev_angles[1]}\n{self.prev_angles[1] + clipped_actions[1]}')
+        alpha_transitions.write(f'{self.prev_angles[0]}\n{actions[0]}\n{self.prev_angles[1]}\n{actions[1]}')
         alpha_transitions.close()
 
-        self.prev_angles += clipped_actions # Action is change in angle, thus current angle is prev_angle + action
+        self.prev_angles = actions
 
         self.run_iters_with_dt() # Run the solver   
         self.cur_iter += self.solver_params.step_iter
