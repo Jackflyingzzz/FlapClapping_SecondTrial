@@ -318,7 +318,7 @@ class IBMEnv(gym.Env):
         alpha_transitions.write(f'{self.prev_angles[0]}\n{actions[0]}\n{self.prev_angles[1]}\n{actions[1]}')
         alpha_transitions.close()
 
-        self.prev_angles = actions
+        
 
         self.run_iters_with_dt() # Run the solver   
         self.cur_iter += self.solver_params.step_iter
@@ -342,10 +342,11 @@ class IBMEnv(gym.Env):
 
         self.history_buffer['top_angle'].extend(self.prev_angles[0])
         self.history_buffer['bottom_angle'].extend(self.prev_angles[1])
-
-        next_state = self.get_next_state(actions)
+        angle_change = actions - self.prev_angles
+        next_state = self.get_next_state(self.prev_angles, angle_change)
         terminal = False #self.cur_iter >= self.max_iter !! We should not be setting terminal to true when reaching max timestep
         reward = force_rw + penalty
+        self.prev_angles = actions
         return next_state, reward, terminal, {}
 
     def run_iters_with_dt(self, iters=None, dt=None):
@@ -381,7 +382,7 @@ class IBMEnv(gym.Env):
 
         return (np.array(drag_vals), np.array(lift_vals))
 
-    def get_next_state(self, actions_rad):
+    def get_next_state(self, prev_actions_deg, angle_change):
         next_state = self.read_probe_output() # Get the pressure field information
 
         if self.env_params['obs_normalisation']:
@@ -395,14 +396,14 @@ class IBMEnv(gym.Env):
                 self.obs_stds = np.sqrt(self.obs_sse/(step - 1))
 
         if self.env_params['include_angles_in_state']:
-            normalised_angles = np.zeros(2, dtype=float)
-            normalised_angles[0] = self.linear_transform(self.prev_angles[0], self.top_flap_limits)
-            normalised_angles[1] = self.linear_transform(self.prev_angles[1], self.bottom_flap_limits)
-            next_state = np.append(next_state, normalised_angles) # Append current angles to state information
+            #normalised_angles = np.zeros(2, dtype=float)
+            #normalised_angles[0] = self.linear_transform(self.prev_angles[0], self.top_flap_limits)
+            #normalised_angles[1] = self.linear_transform(self.prev_angles[1], self.bottom_flap_limits)
+            next_state = np.append(next_state, prev_actions_deg) # Append current angles to state information
 
         if self.env_params['include_angle_change_in_state']:
-            normalised_change = self.linear_transform(actions_rad*180/np.pi, self.env_params['delta_limits'])
-            next_state = np.append(next_state, normalised_change)
+            #normalised_change = self.linear_transform(actions_rad*180/np.pi, self.env_params['delta_limits'])
+            next_state = np.append(next_state, angle_change)
 
         return next_state
 
