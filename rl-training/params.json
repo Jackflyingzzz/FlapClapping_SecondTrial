@@ -27,8 +27,8 @@
 		"max_iter": 51000,
 		"reward_f": {
 			"type": "drag_abs_avg_lift",
-			"avg_window": 1,
-			"gamma": 0.25,
+			"avg_window": 600,
+			"gamma": 0.2,
 			"angle_weight": 5E-3,
 			"angle_change_weight": 5E-3,
 			"filter": false,
