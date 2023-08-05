@@ -242,49 +242,49 @@ class IBMEnv(gym.Env):
                         "lift" : l_lift[0],
                         "reward" : l_reward[0]}
 
-    def _render(self):
-        if self.plt is None:
-            import matplotlib.pyplot as p
-            self.plt = p
-            self.plt.ion()
+    #def _render(self):
+    #    if self.plt is None:
+    #        import matplotlib.pyplot as p
+    #        self.plt = p
+    #        self.plt.ion()
 
-            self.reset_plot()
+    #        self.reset_plot()
 
-        drag, lift = self.read_force_output()
-        delta = self.solver_params.step_iter
-        step_range = np.arange(self.cur_iter - delta + 2,
-                self.cur_iter, dtype=float)/delta
+    #    drag, lift = self.read_force_output()
+    #    delta = self.solver_params.step_iter
+    #    step_range = np.arange(self.cur_iter - delta + 2,
+    #            self.cur_iter, dtype=float)/delta
 
-        self.lines["drag"].set_data(
-                np.append(self.lines["drag"].get_xdata(orig=True), step_range),
-                np.append(self.lines["drag"].get_ydata(orig=True), drag))
+    #    self.lines["drag"].set_data(
+    #            np.append(self.lines["drag"].get_xdata(orig=True), step_range),
+    #            np.append(self.lines["drag"].get_ydata(orig=True), drag))
 
-        self.lines["lift"].set_data(
-                np.append(self.lines["lift"].get_xdata(orig=True), step_range),
-                np.append(self.lines["lift"].get_ydata(orig=True), lift))
+    #    self.lines["lift"].set_data(
+    #            np.append(self.lines["lift"].get_xdata(orig=True), step_range),
+    #            np.append(self.lines["lift"].get_ydata(orig=True), lift))
 
-        self.lines["top_angle"].set_data(
-                np.append(self.lines["top_angle"].get_xdata(orig=True),
-                    self.cur_iter/delta),
-                np.append(self.lines["top_angle"].get_ydata(orig=True),
-                    self.prev_angles[0]))
+    #    self.lines["top_angle"].set_data(
+    #            np.append(self.lines["top_angle"].get_xdata(orig=True),
+    #                self.cur_iter/delta),
+    #            np.append(self.lines["top_angle"].get_ydata(orig=True),
+    #                self.prev_angles[0]))
 
-        self.lines["bot_angle"].set_data(
-                np.append(self.lines["bot_angle"].get_xdata(orig=True),
-                    self.cur_iter/delta),
-                np.append(self.lines["bot_angle"].get_ydata(orig=True),
-                    self.prev_angles[1]))
+    #    self.lines["bot_angle"].set_data(
+    #            np.append(self.lines["bot_angle"].get_xdata(orig=True),
+    #                self.cur_iter/delta),
+    #            np.append(self.lines["bot_angle"].get_ydata(orig=True),
+    #                self.prev_angles[1]))
 
-        self.lines["reward"].set_data(
-                np.append(self.lines["reward"].get_xdata(orig=True),
-                    self.cur_iter/delta),
-                np.append(self.lines["reward"].get_ydata(orig=True),
-                    self.get_reward(np.zeros(2))))
+    #    self.lines["reward"].set_data(
+    #            np.append(self.lines["reward"].get_xdata(orig=True),
+    #                self.cur_iter/delta),
+    #            np.append(self.lines["reward"].get_ydata(orig=True),
+    #                self.get_reward(np.zeros(2))))
 
-        for a in self.ax:
-            a.autoscale(enable=True)
+    #    for a in self.ax:
+    #        a.autoscale(enable=True)
 
-        return self.fig
+    #    return self.fig
         # with io.BytesIO() as buff:
         #     self.fig.savefig(buff, format='raw')
         #     buff.seek(0)
