@@ -5,7 +5,6 @@ import os
 import sys
 
 import numpy as np
-from tqdm import tqdm
 from sb3_contrib import TQC
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize, VecFrameStack
 from stable_baselines3.common.monitor import Monitor
