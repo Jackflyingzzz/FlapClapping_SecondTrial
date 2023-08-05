@@ -373,13 +373,23 @@ class IBMEnv(gym.Env):
 
     def read_force_output(self):
         # TODO: Convert to binary file
-        force_f = open(os.path.join(self.cwd, 'aerof6.dat'), 'r')
-        force_vals = [line.split() for line in force_f.readlines()]
+        #force_f = open(os.path.join(self.cwd, 'aerof6.dat'), 'r')
+        file_path = os.path.join(self.cwd, 'aerof6.dat')
 
-        drag_vals = [float(line[0]) for line in force_vals]
-        lift_vals = [float(line[1]) for line in force_vals]
-
+        drag_vals = []
+        lift_vals = []
+    
+        with open(file_path, 'r') as force_f:
+            for line in force_f:
+                    values = line.split()
+                    try:
+                        drag_vals.append(float(values[0]))
+                        lift_vals.append(float(values[1]))
+                    except (IndexError, ValueError):  # catches lines with not enough values or non-numeric values
+                        # Handle or log the error here
+                        pass
         return (np.array(drag_vals), np.array(lift_vals))
+
 
     def get_next_state(self, actions_rad):
         next_state = self.read_probe_output() # Get the pressure field information
