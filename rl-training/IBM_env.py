@@ -318,12 +318,16 @@ class IBMEnv(gym.Env):
         alpha_transitions.write(f'{self.prev_angles[0]}\n{self.prev_angles[0] + clipped_actions[0]}\n{self.prev_angles[1]}\n{self.prev_angles[1] + clipped_actions[1]}')
         alpha_transitions.close()
 
-        self.prev_angles += clipped_actions # Action is change in angle, thus current angle is prev_angle + action
+        
 
         self.run_iters_with_dt() # Run the solver   
-        self.cur_iter += self.solver_params.step_iter
+        
 
-        (drag, lift) = self.read_force_output()
+        (drag, lift) = self.read_force_output() #read the drag and lift, and output it to an csv file
+        
+        self.cur_iter += self.solver_params.step_iter
+        self.prev_angles += clipped_actions # Action is change in angle, thus current angle is prev_angle + action
+       
         self.history_buffer['lift'].extend(lift)
         self.history_buffer['drag'].extend(drag)
 
@@ -375,7 +379,7 @@ class IBMEnv(gym.Env):
         # TODO: Convert to binary file
         #force_f = open(os.path.join(self.cwd, 'aerof6.dat'), 'r')
         file_path = os.path.join(self.cwd, 'aerof6.dat')
-
+        
         drag_vals = []
         lift_vals = []
     
@@ -388,7 +392,50 @@ class IBMEnv(gym.Env):
                     except (IndexError, ValueError):  # catches lines with not enough values or non-numeric values
                         # Handle or log the error here
                         pass
-        return (np.array(drag_vals), np.array(lift_vals))
+
+        file_path_angle = os.path.join(self.cwd, 'alpha_transitions.prm')
+        with open(file_path_angle, 'r') as angle_a:
+            lines = angle_a.readlines()
+        
+            try:
+                top_flap_prev_angle = float(lines[0].strip())
+                top_flap_future_angle = float(lines[1].strip())
+                bottom_flap_prev_angle = float(lines[2].strip())
+                bottom_flap_future_angle = float(lines[3].strip())
+            except (IndexError, ValueError):
+                # Handle or log the error here. Perhaps set angles to None or another default value.
+                top_flap_prev_angle, top_flap_future_angle, bottom_flap_prev_angle, bottom_flap_future_angle = None, None, None, None
+                
+        drag = np.array(drag_vals)
+        lift = np.array(lift_vals)
+
+        output_name = f'debug_{self.env_number}'
+        output_path = os.path.join(cwd, output_name)
+        file_exists = os.path.exists(output_path)
+        mode = 'a' if file_exists else 'w'  # Open in append mode if file exists, otherwise write mode
+
+        steps = self.cur_iter
+        counter = 0
+        with open(output_path, mode) as csv_file:
+            spam_writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
+
+            
+            # If file didn't exist, write the header
+            if not file_exists:
+                spam_writer.writerow(["Episode", "Steps", "Drag", "Lift", "Top Flap Angle", "Bottom Flap Angle"])
+
+            for d, l in zip(drag, lift):
+                steps += 1
+                counter +=1
+                
+                #linear interpolation between previous and futrue angle, consistent with incompact3d setting which assume uniform angular velocity
+                topflap_current = (counter/self.solver_params.step_iter)*(top_flap_future_angle-top_flap_prev_angle) + top_flap_prev_angle 
+                bottomflap_current = (counter/self.solver_params.step_iter)*(bottom_flap_future_angle-bottom_flap_prev_angle) + bottom_flap_prev_angle
+
+                
+                spam_writer.writerow([self.episode, steps, d, l, topflap_current, bottomflap_current])
+
+        return drag, lift
 
 
     def get_next_state(self, actions_rad):
