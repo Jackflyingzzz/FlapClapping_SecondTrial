@@ -81,7 +81,7 @@ if __name__ == '__main__':
         'solver_params': solver_params,
         'env_params': env_params,
         'logdir': logdir,
-        'rl_output': = rl_output
+        'rl_output' = rl_output
         'eval': False
     }
 
