@@ -71,7 +71,7 @@ if __name__ == '__main__':
     if not reset_iterations == 0:
         IBMEnv.GenerateRestart(reset_dir, exec_dir, reset_iterations)
 
-    rl_output = params['rl_output']
+    rl_output = 'angle_change' #('angle_change' or 'angle')
 
     env_config = {
         'cwd': cwd,
