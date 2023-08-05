@@ -410,7 +410,7 @@ class IBMEnv(gym.Env):
         lift = np.array(lift_vals)
 
         output_name = f'debug_{self.env_number}'
-        output_path = os.path.join(cwd, output_name)
+        output_path = os.path.join(self.cwd, output_name)
         file_exists = os.path.exists(output_path)
         mode = 'a' if file_exists else 'w'  # Open in append mode if file exists, otherwise write mode
 
