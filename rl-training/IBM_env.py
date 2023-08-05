@@ -74,7 +74,7 @@ class IBMEnv(gym.Env):
         solver_params = env_config['solver_params']
         env_params = env_config['env_params']
         logdir = env_config['logdir']
-        rl_output = env_config['rl_output']
+        self.rl_output = env_config['rl_output']
 
         self._is_eval = env_config['eval']
 
@@ -159,9 +159,9 @@ class IBMEnv(gym.Env):
 
         self.observation_space = gym.spaces.Box(shape=(state_shape,), low=-np.inf, high=np.inf) # Shape is number of probes
         
-        if rl_output == 'angle_change':
+        if self.rl_output == 'angle_change':
             self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.env_params['delta_limits'][0])*np.pi/180, high=float(self.env_params['delta_limits'][1])*np.pi/180)
-        elif rl_output == 'angle':
+        elif self.rl_output == 'angle':
             self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.top_flap_limits[0])*np.pi/180, high=float(self.top_flap_limits[1])*np.pi/180)
         else:
             assert 'The rl output in code launch_parallel_sb3.py is not in correct format'
@@ -320,11 +320,11 @@ class IBMEnv(gym.Env):
         elif self.flap_behaviour == 'clapping':
             actions = np.append(actions, -actions[0]) # When clapping, flap angles are opposite
             
-        if rl_output == 'angle_change':
+        if self.rl_output == 'angle_change':
             clipped_actions, penalty = self._clip_angles(actions*180/np.pi) # Clip the angles into a valid range
             alpha_transitions.write(f'{self.prev_angles[0]}\n{self.prev_angles[0] + clipped_actions[0]}\n{self.prev_angles[1]}\n{self.prev_angles[1] + clipped_actions[1]}')
             alpha_transitions.close()
-        elif rl_output == 'angle':
+        elif self.rl_output == 'angle':
             actions = actions*(180/np.pi)
             alpha_transitions.write(f'{self.prev_angles[0]}\n{actions[0]}\n{self.prev_angles[1]}\n{actions[1]}')
             alpha_transitions.close()
@@ -336,9 +336,9 @@ class IBMEnv(gym.Env):
         (drag, lift) = self.read_force_output() #read the drag and lift, and output it to an csv file
         
         self.cur_iter += self.solver_params.step_iter
-        if rl_output == 'angle_change':
+        if self.rl_output == 'angle_change':
             self.prev_angles += clipped_actions # Action is change in angle, thus current angle is prev_angle + action
-        elif rl_output == 'angle':
+        elif self.rl_output == 'angle':
             self.prev_angles = actions # Action is the angle
         else:
             assert 'The rl output in code launch_parallel_sb3.py is not in correct format'
