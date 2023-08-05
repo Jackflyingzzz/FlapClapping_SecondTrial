@@ -74,6 +74,7 @@ class IBMEnv(gym.Env):
         solver_params = env_config['solver_params']
         env_params = env_config['env_params']
         logdir = env_config['logdir']
+        rl_params = env_config['rl_params']
 
         self._is_eval = env_config['eval']
 
