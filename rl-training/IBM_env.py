@@ -163,6 +163,8 @@ class IBMEnv(gym.Env):
             self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.env_params['delta_limits'][0])*np.pi/180, high=float(self.env_params['delta_limits'][1])*np.pi/180)
         else if rl_output == 'angle':
             self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.top_flap_limits[0])*np.pi/180, high=float(self.top_flap_limits[1])*np.pi/180)
+        else:
+            assert 'The rl output in code launch_parallel_sb3.py is not in correct format'
         #self.spec.max_episode_steps = int(np.ceil(self.max_iter / self.solver_params.step_iter))
 
     # Optional
@@ -317,21 +319,30 @@ class IBMEnv(gym.Env):
             actions = np.append(actions, actions[0]) # When snaking, both flaps have the same angle
         elif self.flap_behaviour == 'clapping':
             actions = np.append(actions, -actions[0]) # When clapping, flap angles are opposite
-
-        clipped_actions, penalty = self._clip_angles(actions*180/np.pi) # Clip the angles into a valid range
-
-        alpha_transitions.write(f'{self.prev_angles[0]}\n{self.prev_angles[0] + clipped_actions[0]}\n{self.prev_angles[1]}\n{self.prev_angles[1] + clipped_actions[1]}')
-        alpha_transitions.close()
-
-        
-
+            
+        if rl_output == 'angle_change':
+            clipped_actions, penalty = self._clip_angles(actions*180/np.pi) # Clip the angles into a valid range
+            alpha_transitions.write(f'{self.prev_angles[0]}\n{self.prev_angles[0] + clipped_actions[0]}\n{self.prev_angles[1]}\n{self.prev_angles[1] + clipped_actions[1]}')
+            alpha_transitions.close()
+        else if rl_output == 'angle':
+            actions = actions*(180/np.pi)
+            alpha_transitions.write(f'{self.prev_angles[0]}\n{actions[0]}\n{self.prev_angles[1]}\n{actions[1]}')
+            alpha_transitions.close()
+        else:
+            assert 'The rl output in code launch_parallel_sb3.py is not in correct format'
+            
         self.run_iters_with_dt() # Run the solver   
         
-
         (drag, lift) = self.read_force_output() #read the drag and lift, and output it to an csv file
         
         self.cur_iter += self.solver_params.step_iter
-        self.prev_angles += clipped_actions # Action is change in angle, thus current angle is prev_angle + action
+        if rl_output == 'angle_change':
+            self.prev_angles += clipped_actions # Action is change in angle, thus current angle is prev_angle + action
+        else if rl_output == 'angle':
+            self.prev_angles = actions # Action is the angle
+        else:
+            assert 'The rl output in code launch_parallel_sb3.py is not in correct format'
+            
        
         self.history_buffer['lift'].extend(lift)
         self.history_buffer['drag'].extend(drag)
