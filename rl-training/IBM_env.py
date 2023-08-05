@@ -365,7 +365,13 @@ class IBMEnv(gym.Env):
 
         next_state = self.get_next_state(actions)
         terminal = False #self.cur_iter >= self.max_iter !! We should not be setting terminal to true when reaching max timestep
-        reward = force_rw + penalty
+        if self.rl_output == 'angle_change':
+            reward = force_rw + penalty
+        elif self.rl_output == 'angle':
+            reward = force_rw
+        else:
+            assert 'The rl output in code launch_parallel_sb3.py is not in correct format'
+            
         return next_state, reward, terminal, {}
 
     def run_iters_with_dt(self, iters=None, dt=None):
