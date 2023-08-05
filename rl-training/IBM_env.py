@@ -162,7 +162,7 @@ class IBMEnv(gym.Env):
         if rl_output == 'angle_change':
             self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.env_params['delta_limits'][0])*np.pi/180, high=float(self.env_params['delta_limits'][1])*np.pi/180)
         else if rl_output == 'angle':
-            self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.env_params['delta_limits'][0])*np.pi/180, high=float(self.env_params['delta_limits'][1])*np.pi/180)
+            self.action_space = gym.spaces.Box(shape=(self.action_shape,), low=float(self.top_flap_limits[0])*np.pi/180, high=float(self.top_flap_limits[1])*np.pi/180)
         #self.spec.max_episode_steps = int(np.ceil(self.max_iter / self.solver_params.step_iter))
 
     # Optional
