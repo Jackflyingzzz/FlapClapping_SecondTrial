@@ -71,7 +71,7 @@ if __name__ == '__main__':
     if not reset_iterations == 0:
         IBMEnv.GenerateRestart(reset_dir, exec_dir, reset_iterations)
 
-    #rl_params = params['rl_params']
+    rl_output = params['rl_output']
 
     env_config = {
         'cwd': cwd,
@@ -81,6 +81,7 @@ if __name__ == '__main__':
         'solver_params': solver_params,
         'env_params': env_params,
         'logdir': logdir,
+        'rl_output': = rl_output
         'eval': False
     }
 
