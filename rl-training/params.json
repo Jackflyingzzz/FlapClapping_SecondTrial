@@ -36,7 +36,7 @@
 		},
 		"restart_num": -1,
 		"dump_debug": 850,
-		"behaviour_type": "snaking",
+		"behaviour_type": "clapping",
 		"include_angles_in_state": true,
 		"obs_normalisation": false,
 		"include_angle_change_in_state": true,
