@@ -1,0 +1,3 @@
+2a0c:5bc0:89:a0c:bace:f6ff:fef9:9796 10.149.19.100
+/var/spool/PBS/mom_priv/jobs/8136649.pbs.SC: line 20: cd: rl-training: No such file or directory
+/rds/general/user/jz1720/home/FlapClapping_FirstTrial/rl-training/reset_env
