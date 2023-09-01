@@ -6,6 +6,7 @@ class ProbeLayout():
 	def __init__(self, probe_params, solver_params):
 		self.s_params = solver_params
 		self.layout_type = probe_params['type']
+		print(self.layout_type)
 		self.n_probes = probe_params['n_probes']
 
 	def generate_probe_layout_file(self, output_file):
@@ -60,7 +61,7 @@ class ProbeLayout():
 			out = open(output_file, 'w')
 			if self.layout_type == 'uniform_base':
 				for i in range(y_probe_location.shape[0]):
-					out.write(f'{x_probe_location} {y_probe_location{i} 1\n')
+					out.write(f'{x_probe_location} {y_probe_location[i]} 1\n')
 			else:
 				for i in range(probe_coords.shape[1]): # Loop over probe_coords or flatten to obtain pairs of (x, y) coordinates then write into a file to generate probes
 					for j in range(probe_coords.shape[2]):
