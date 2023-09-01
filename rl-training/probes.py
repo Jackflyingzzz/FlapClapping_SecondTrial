@@ -43,6 +43,7 @@ class ProbeLayout():
 			self.n_probes = 200
 
 		elif self.layout_type == 'uniform_base':
+			print('have you monsh')
 			back_face_mesh_x = np.ceil(self.s_params.mesh_x * (self.s_params.x_centre + self.s_params.ar/2 + margin) / self.s_params.domain_x)
 			top_face_y = self.s_params.y_centre + 1/2
 			bottom_face_y = self.s_params.y_centre - 1/2
