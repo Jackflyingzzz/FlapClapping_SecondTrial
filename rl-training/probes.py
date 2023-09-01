@@ -6,11 +6,11 @@ class ProbeLayout():
 	def __init__(self, probe_params, solver_params):
 		self.s_params = solver_params
 		self.layout_type = probe_params['type']
-		print(self.layout_type)
 		self.n_probes = probe_params['n_probes']
 
 	def generate_probe_layout_file(self, output_file):
 		probe_coords = None
+		print(self.layout_type)
 		margin = 0.2 # Distance from the edge of the thing we're aligning with
 		if self.layout_type == 'uniform_wake': # Generates 200 uniform probes in the wake of the body
 			back_face_mesh_x = np.ceil(self.s_params.mesh_x * (self.s_params.x_centre + self.s_params.ar/2 + margin) / self.s_params.domain_x)
