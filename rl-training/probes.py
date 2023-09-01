@@ -41,6 +41,7 @@ class ProbeLayout():
 			y_probe_space = np.linspace(bottom_face_mesh_point_y, top_face_mesh_point_y, 10, dtype=int)
 			probe_coords = np.array(np.meshgrid(x_probe_space, y_probe_space), dtype=int) # TODO: We dont need meshgrid, just iterate over two linspaces
 			self.n_probes = 200
+			
 
 		elif self.layout_type == 'uniform_base':
 			print('have you monsh')
