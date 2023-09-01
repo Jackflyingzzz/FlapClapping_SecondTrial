@@ -13,6 +13,7 @@ class ProbeLayout():
 		print(self.layout_type)
 		margin = 0.2 # Distance from the edge of the thing we're aligning with
 		if self.layout_type == 'uniform_wake': # Generates 200 uniform probes in the wake of the body
+			print('indicator1')
 			back_face_mesh_x = np.ceil(self.s_params.mesh_x * (self.s_params.x_centre + self.s_params.ar/2 + margin) / self.s_params.domain_x)
 			last_probe_x = min(back_face_mesh_x + 0.25 * self.s_params.mesh_x, self.s_params.mesh_x) # Take the min to ensure last_probe is still part of mesh
 			top_face_y = self.s_params.y_centre + 1/2
@@ -28,6 +29,7 @@ class ProbeLayout():
 			self.n_probes = 200
 		
 		elif self.layout_type == 'uniform_flap_wake': # Generates 200 uniform probes after the flaps
+			print('indicator2')
 			back_flap_mesh_x = np.ceil(self.s_params.mesh_x * (self.s_params.x_centre + self.s_params.ar/2 + self.s_params.flap_length + margin) / self.s_params.domain_x)
 			last_probe_x = min(back_flap_mesh_x + 0.25 * self.s_params.mesh_x, self.s_params.mesh_x) # Take the min to ensure last_probe is still part of mesh
 			top_face_y = self.s_params.y_centre + 1/2
@@ -44,7 +46,7 @@ class ProbeLayout():
 			
 
 		elif self.layout_type == 'uniform_base':
-			print('have you monsh')
+			
 			back_face_mesh_x = np.ceil(self.s_params.mesh_x * (self.s_params.x_centre + self.s_params.ar/2 + margin) / self.s_params.domain_x)
 			top_face_y = self.s_params.y_centre + 1/2
 			bottom_face_y = self.s_params.y_centre - 1/2
